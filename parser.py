@@ -28,10 +28,10 @@ class GbParse:
                 response = requests.get(url, *args, **kwargs)
                 if response.status_code > 399:
                     raise ParseError(response.status_code)
-                time.sleep(0.1)
+                time.sleep(0.05)
                 return response
             except (requests.RequestException, ParseError):
-                time.sleep(0.5)
+                time.sleep(0.05)
                 continue
 
     def _get_soup(self, *args, **kwargs):
@@ -71,11 +71,14 @@ class GbParse:
                 self.tasks.append(task)
                 self.done_url.add(a_url)
 
-    def get_comments_data(self, soup):
+    @staticmethod
+    def get_comments_data(soup):
         comments = requests.get(
             "https://geekbrains.ru/api/v2/comments?commentable_type=Post&commentable_id=" + soup.find("comments").get(
                 "commentable-id")).json()
-        return [{"writer": comments[i]['comment']['user']['full_name'], "body": comments[i]['comment']['body']} for i
+        return [{"writer_name": comments[i]['comment']['user']['full_name'],
+                 "writer_url": comments[i]['comment']['user']["url"],
+                 "body": comments[i]['comment']['body']} for i
                 in
                 range(len(comments))]
 

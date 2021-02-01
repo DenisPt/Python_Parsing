@@ -40,6 +40,7 @@ class Post(IdMixin, UrlMixin, Base):
 class Author(IdMixin, UrlMixin, NameMixin, Base):
     __tablename__ = "author"
     posts = relationship("Post")
+    comments = relationship("Comment")
 
 
 class Tag(IdMixin, UrlMixin, NameMixin, Base):
@@ -50,7 +51,8 @@ class Tag(IdMixin, UrlMixin, NameMixin, Base):
 class Comment(IdMixin, Base):
     __tablename__ = "comment"
     body = Column(String, nullable=False)
-    writer = Column(String, nullable=False)
+    writer_id = Column(Integer, ForeignKey("author.id"))
+    writer = relationship("Author")
     post_id = Column(Integer, ForeignKey("post.id"))
     post = relationship("Post")
 
