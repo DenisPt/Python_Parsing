@@ -5,7 +5,7 @@ import models
 
 class Database:
     def __init__(self, db_url):
-        engine = create_engine(db_url, echo=True)
+        engine = create_engine(db_url)
         models.Base.metadata.drop_all(engine)
         models.Base.metadata.create_all(bind=engine)
         self.maker = sessionmaker(bind=engine)
